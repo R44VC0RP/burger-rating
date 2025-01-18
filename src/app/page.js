@@ -1,101 +1,149 @@
-import Image from "next/image";
+'use client'
+
+import { useState, useRef, useEffect } from 'react'
+import { FaUpload } from 'react-icons/fa'
+import { FaBurger } from 'react-icons/fa6'
+import { rateBurger } from './actions'
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [rating, setRating] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+  const [previewUrl, setPreviewUrl] = useState(null)
+  const fileInputRef = useRef(null)
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
+  useEffect(() => {
+    // Check if device is mobile
+    const checkMobile = () => {
+      setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent))
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => {
+      window.removeEventListener('resize', checkMobile)
+      // Cleanup preview URL
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl)
+      }
+    }
+  }, [previewUrl])
+
+  const getRatingColor = (percentage) => {
+    if (percentage >= 80) return 'text-green-500'
+    if (percentage >= 60) return 'text-emerald-500'
+    if (percentage >= 40) return 'text-yellow-500'
+    if (percentage >= 20) return 'text-orange-500'
+    return 'text-red-500'
+  }
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      // Cleanup old preview
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl)
+      }
+      // Create new preview
+      setPreviewUrl(URL.createObjectURL(file))
+      setIsLoading(true)
+      setRating(null)
+      
+      const formData = new FormData()
+      formData.append('image', file)
+      const result = await rateBurger(formData)
+      setRating(result)
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="bg-purple-500 text-white text-center py-2 text-sm">
+        <a 
+          href="https://x.com/i/communities/1875485031298469891" 
+          target="_blank" 
           rel="noopener noreferrer"
+          className="hover:underline inline-flex items-center gap-2"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
+          Official website of the X Burger Posting Community 
+          <span className="text-xs">↗</span>
         </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
+      
+      <div className="p-8">
+        <main className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-gray-800 mb-4 flex items-center justify-center gap-3">
+              <FaBurger className="text-yellow-600" />
+              Burger Ratings
+            </h1>
+            <p className="text-gray-600">
+              {isMobile 
+                ? "Take a photo or choose from your library to rate your burger!"
+                : "Upload a photo of your burger for an instant rating!"}
+            </p>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <div className="space-y-4">
+              <button
+                onClick={() => fileInputRef.current.click()}
+                className="flex items-center justify-center gap-2 bg-purple-500 text-white px-6 py-4 rounded-lg hover:bg-purple-600 transition-colors w-full"
+              >
+                <FaUpload />
+                {isMobile ? 'Take Photo or Choose from Library' : 'Upload Photo'}
+              </button>
+              <input
+                type="file"
+                accept="image/*"
+                capture={isMobile ? 'environment' : undefined}
+                className="hidden"
+                ref={fileInputRef}
+                onChange={handleFileUpload}
+              />
+            </div>
+          </div>
+
+          {previewUrl && (
+            <div className="relative mb-8 rounded-xl overflow-hidden">
+              <img 
+                src={previewUrl} 
+                alt="Uploaded burger" 
+                className="w-full h-[300px] object-cover"
+              />
+              {isLoading && (
+                <div className="absolute inset-0 bg-black bg-opacity-50">
+                  <div className="absolute inset-0 animate-scan">
+                    <div className="h-1 bg-gradient-to-r from-transparent via-purple-500 to-transparent w-full" />
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <p className="text-white text-lg font-semibold">Analyzing burger...</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {rating && !isLoading && (
+            <div className="bg-white rounded-xl shadow-lg p-8">
+              <div className="text-center mb-6">
+                <h2 className="text-2xl font-bold mb-2 text-gray-800">Burger Rating</h2>
+                <div className={`text-6xl font-bold ${getRatingColor(rating.rating)}`}>
+                  {rating.rating}%
+                </div>
+                <p className="text-gray-600 mt-2">Juiciness Score</p>
+              </div>
+              
+              <div className="border-t pt-6">
+                <h3 className="text-lg font-semibold mb-4 text-gray-800">Analysis:</h3>
+                <p className="text-gray-700 leading-relaxed">
+                  {rating.comments}
+                </p>
+              </div>
+            </div>
+          )}
+        </main>
+      </div>
     </div>
-  );
+  )
 }

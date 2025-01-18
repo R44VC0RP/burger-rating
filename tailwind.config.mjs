@@ -11,6 +11,15 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      keyframes: {
+        scan: {
+          '0%': { transform: 'translateY(-100%)' },
+          '100%': { transform: 'translateY(300%)' },
+        }
+      },
+      animation: {
+        'scan': 'scan 2s linear infinite',
+      },
     },
   },
   plugins: [],
