@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { FaUpload } from 'react-icons/fa'
 import { FaBurger } from 'react-icons/fa6'
+import { FaGithub, FaXTwitter } from 'react-icons/fa6'
 import { rateBurger } from './actions'
 
 export default function Home() {
@@ -57,7 +58,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <div className="bg-purple-500 text-white text-center py-2 text-sm">
         <a 
           href="https://x.com/i/communities/1875485031298469891" 
@@ -70,7 +71,7 @@ export default function Home() {
         </a>
       </div>
       
-      <div className="p-8">
+      <div className="p-8 flex-grow">
         <main className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-gray-800 mb-4 flex items-center justify-center gap-3">
@@ -144,6 +145,34 @@ export default function Home() {
           )}
         </main>
       </div>
+
+      <footer className="bg-white border-t py-6 mt-auto">
+        <div className="max-w-4xl mx-auto px-8 flex items-center justify-between">
+          <div className="text-gray-600">
+            Made with 🍔 by Ryan
+          </div>
+          <div className="flex items-center gap-4">
+            <a
+              href="https://x.com/ryandavogel"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-600 hover:text-purple-500 transition-colors inline-flex items-center gap-2"
+            >
+              <FaXTwitter className="text-xl" />
+              <span className="text-sm">Follow @ryandavogel</span>
+            </a>
+            <a
+              href="https://github.com/R44VC0RP"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-600 hover:text-purple-500 transition-colors inline-flex items-center gap-2"
+            >
+              <FaGithub className="text-xl" />
+              <span className="text-sm">R44VC0RP</span>
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
